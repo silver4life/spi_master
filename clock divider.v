@@ -5,7 +5,7 @@
 module clock_devider(
     input clk,
     input reset,
-    input clk_devider_reset,
+    input clk_divider_reset,
     output sclk
     );
     reg [4:0] counter_reg;
@@ -16,7 +16,7 @@ module clock_devider(
             counter_reg<=0;
         
         else
-            if(clk_devider_reset)
+            if(clk_divider_reset)
                 counter_reg<=0;
             else    
                 counter_reg<=counter_reg+1;
