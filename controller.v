@@ -17,26 +17,18 @@ module controller#(parameter data_width=8)(
     output reg sclk_out,
     output reg [data_width-1:0] data_out
     );
-    
-    
-    
-    
     reg [data_width-1:0] buffer;    
     reg [data_width-1:0] mosi_reg , mosi_next;
     reg [data_width-1:0] miso_reg,miso_next;
     reg [$clog2(data_width) :0] counter_reg,counter_next;
     reg [1:0] state_reg,state_next;
-
     localparam idle=0;
     localparam load=1;
     localparam transmit=2;
     localparam store=3;
     
-    
-    
     always@(posedge clk)
     begin
-    
         if(reset)
         begin
             counter_reg<=0;
@@ -45,8 +37,6 @@ module controller#(parameter data_width=8)(
             mosi_reg<=0;
             buffer<=0;
         end
-        
-        
         else
         begin
             counter_reg<=counter_next;
@@ -54,16 +44,9 @@ module controller#(parameter data_width=8)(
             miso_reg<=miso_next;
             mosi_reg<=mosi_next;
             buffer<=data_in;
-        end
-        
-               
+        end          
     end
-    
-    
-    
-    
-    
-    
+      
     always@(*)
     begin
         cs=1;
@@ -75,9 +58,7 @@ module controller#(parameter data_width=8)(
         counter_next=counter_reg;
         clk_divider_reset=0;
         
-        case(state_reg)
-            
-               
+        case(state_reg)          
             idle:
             begin
                 if(spi_enable==0)
@@ -95,21 +76,15 @@ module controller#(parameter data_width=8)(
                 end
                            
             end
-            
-            
-            
-            
+
             load:
             begin
                 mosi_next=buffer;
                 state_next=transmit;
                 sclk_out=sclk_in;
                 cs=0;
-                
+   
             end
-
-            
-            
             transmit:
             begin
                 
@@ -120,29 +95,20 @@ module controller#(parameter data_width=8)(
                 begin
                     state_next=store;
                     counter_next=0;
-                end
-                
-                
+                end                        
                 else 
-                begin
-                    
+                begin              
                     if(positive_edge)
                     begin
                         miso_next={miso,miso_reg[data_width-1:1]};
                         counter_next=counter_reg+1'b1;
-                    end
-                    
+                    end          
                     else if(negative_edge)
                     begin
                         mosi_next={1'b0,mosi_reg[data_width-1:1]};
-                    end
-                    
-                end
-                
-                
-            end
-            
-            
+                    end                 
+                end              
+            end          
             store:
             begin
                 sclk_out=sclk_in;
@@ -151,19 +117,10 @@ module controller#(parameter data_width=8)(
                 if(negative_edge)              //to get full cycle before going back to idle
                     state_next=idle;
             end
-   
         endcase
     end
-    
- 
-
-
-
-
 
     assign mosi=mosi_reg[0];
-
-
 endmodule
 
 
