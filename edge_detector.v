@@ -11,7 +11,7 @@ module edge_detector(
     );
     reg state;
 
-
+ 
     always@(posedge clk)
     begin
         if(reset) 
