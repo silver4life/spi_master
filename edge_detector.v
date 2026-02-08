@@ -6,7 +6,8 @@ module edge_detector(
     input clk,
     input reset,
     input signal, // signal to be edge detected
-    output positive_edge,negative_edge
+    output positive_edge,
+    output negative_edge
     );
     reg state;
 
