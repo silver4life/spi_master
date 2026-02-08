@@ -91,7 +91,7 @@ module controller#(parameter data_width=8)(
                 begin 
                     state_next=load;
                     cs=0;
-                    clk_devider_reset=1;
+                    clk_devider_reset=1;   //synchronous reset to the clock devider so when the transaction starts sclk is valid
                 end
                            
             end
