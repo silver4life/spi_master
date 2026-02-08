@@ -3,7 +3,6 @@
 
 
 
-
 module clock_devider(
     input clk,
     input reset,
