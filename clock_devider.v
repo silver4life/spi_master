@@ -5,24 +5,24 @@
 
 
 module clock_devider(
-    input clk,reset,
+    input clk,
+    input reset,
+    input clk_devider_reset,
     output sclk
     );
     reg [4:0] counter_reg;
     always@(posedge clk)
     begin
-        if(reset) counter_reg<=0;
+    
+        if(reset)
+            counter_reg<=0;
         
         else
-        begin
-            if(counter_reg==5'd31)
+            if(clk_devider_reset)
                 counter_reg<=0;
-               
-            else
+            else    
                 counter_reg<=counter_reg+1;
-        end
-        
-        
+     
     end
     
     assign sclk=counter_reg[4];
