@@ -14,24 +14,24 @@ module master(
     );
     
     
-    wire sclk_clock_devider;
+    wire clk_devider_wire;
     wire pos_edge;
     wire neg_edge;
+    wire clk_devider_reset;
     
-    
-    controller#(.data_width(8)) controller_instance(.negative_edge(neg_edge),.positive_edge(pos_edge),
-    .data_in(data_in),.mosi(mosi),.cs(cs),
+    controller#(.data_width(8))   controller_instance(.mosi(mosi),.miso(miso),.clk(clk),.cs(cs),
+    .reset(reset),.negative_edge(neg_edge),.positive_edge(pos_edge),.data_in(data_in),
     .sclk_out(sclk),.data_out(data_out)
-    ,.clk(clk),.sclk_in(sclk_clock_devider),.reset(reset)
-    ,.miso(miso),.spi_enable(spi_enable));
+    ,.sclk_in(clk_devider_wire),
+    .spi_enable(spi_enable),.clk_devider_reset(clk_devider_reset));
     
     
     
-    edge_detector    edge_detector_instance(.clk(clk),.reset(reset),.signal(sclk_clock_devider),
+    edge_detector    edge_detector_instance(.clk(clk),.reset(reset),.signal(clk_devider_wire),
     .positive_edge(pos_edge),.negative_edge(neg_edge));
     
     
     
-    clock_devider    clock_devider_instance(.clk(clk),.reset(reset),.sclk(sclk_clock_devider));
+    clock_devider    clock_devider_instance(.clk(clk),.reset(reset),.sclk(clk_devider_wire),.clk_devider_reset(clk_devider_reset));
     
 endmodule
