@@ -14,10 +14,10 @@ module master(
     );
     
     
-    wire clk_devider_wire;
+    wire clk_divider_wire;
     wire pos_edge;
     wire neg_edge;
-    wire clk_devider_reset;
+    wire clk_divider_reset;
     
     controller#(.data_width(8))   controller_instance(.mosi(mosi),.miso(miso),.clk(clk),.cs(cs),
     .reset(reset),.negative_edge(neg_edge),.positive_edge(pos_edge),.data_in(data_in),
@@ -27,11 +27,11 @@ module master(
     
     
     
-    edge_detector    edge_detector_instance(.clk(clk),.reset(reset),.signal(clk_devider_wire),
+    edge_detector    edge_detector_instance(.clk(clk),.reset(reset),.signal(clk_divider_wire),
     .positive_edge(pos_edge),.negative_edge(neg_edge));
     
     
     
-    clock_devider    clock_devider_instance(.clk(clk),.reset(reset),.sclk(clk_devider_wire),.clk_devider_reset(clk_devider_reset));
+    clock_divider    clock_divider_instance(.clk(clk),.reset(reset),.sclk(clk_divider_wire),.clk_devider_reset(clk_divider_reset));
     
 endmodule
