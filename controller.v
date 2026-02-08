@@ -12,7 +12,7 @@ module controller#(parameter data_width=8)(
     input positive_edge,
     input [data_width-1:0] data_in,
     output mosi,
-    output reg clk_devider_reset,
+    output reg clk_divider_reset,
     output reg cs,
     output reg sclk_out,
     output reg [data_width-1:0] data_out
@@ -73,7 +73,7 @@ module controller#(parameter data_width=8)(
         miso_next=miso_reg;
         data_out=0;
         counter_next=counter_reg;
-        clk_devider_reset=0;
+        clk_divider_reset=0;
         
         case(state_reg)
             
@@ -91,7 +91,7 @@ module controller#(parameter data_width=8)(
                 begin 
                     state_next=load;
                     cs=0;
-                    clk_devider_reset=1;   //synchronous reset to the clock devider so when the transaction starts sclk is valid
+                    clk_divider_reset=1;   //synchronous reset to the clock devider so when the transaction starts sclk is valid
                 end
                            
             end
