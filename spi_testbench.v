@@ -1,70 +1,75 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 0.1ns
 
+module spi_tb(
 
-module spi_testbench(); 
-    reg clk;
-    reg reset;
-    reg miso;
-    reg spi_enable;
-    reg [7:0] data_in;
-    reg [7:0] slave_shift_reg;
-    wire mosi;
-    wire cs;
-    wire sclk;
-    wire [7:0] data_out;
-    integer i=0;
+    );
+    wire spi_cs;
+    wire spi_sclk;
+    reg spi_miso;
+    wire spi_mosi;
     
-    master master_tb
-    (.clk(clk),
-    .reset(reset)
-    ,.miso(miso)
-    ,.spi_enable(spi_enable)
-    ,.data_in(data_in)
-    ,.mosi(mosi)
-    ,.cs(cs)
-    ,.sclk(sclk)
-    ,.data_out(data_out));
-
+    reg clk=0;
+    reg reset=1;
+    
+    reg enable;
+    reg [7:0] bus_data_in;
+    wire [7:0] bus_data_out;
+    
+    master #(
+    .cpol(1)
+    ,.cpha(1)
+    ,.div_factor(10)
+    ,.data_width(8))
+    master_tb(
+    .spi_cs(spi_cs)
+    ,.spi_sclk(spi_sclk)
+    ,.spi_miso(spi_miso)
+    ,.spi_mosi(spi_mosi)
+    ,.clk(clk)
+    ,.reset(reset)
+    ,.enable(enable)
+    ,.bus_data_in(bus_data_in)
+    ,.bus_data_out(bus_data_out)
+    );
     always
     begin
-        clk=0;#5;
-        clk=1;#5;
+        #5 clk =~clk;
     end
+    
     initial
     begin
-        i=0;
-        reset=1; 
-        #20;
-        reset=0; 
-        #10;
-        data_in=8'b11100110;
-        slave_shift_reg=8'b00000011;
-        #10;
-        spi_enable=1;#100;
-        spi_enable=0;#4000;
-        data_in=8'b00001111;
-        slave_shift_reg=8'b11000011;
-        spi_enable=1;#20;
-        spi_enable=0;#4000;
-        $finish; 
+        repeat(2)@(posedge clk);
+        reset=0;
+        bus_data_in=8'hfa;
+        repeat(5)@(posedge clk);
+        enable=1;
+        repeat(2)@(posedge clk);
+        enable=0;
+        repeat(100)@(posedge clk);
+        enable=1;
+        repeat(1)@(posedge clk);
+        enable=0;
     end
-       
-    always@(negedge cs)
+    
+    reg [7:0] miso=8'b1111000;
+    integer i=7;
+    initial
     begin
-        miso=slave_shift_reg[0];
-        i=i+1;
+        
+        
+        repeat(8)@(negedge spi_sclk)
+        begin
+            spi_miso<=miso[i];
+            i=i-1;
+        end
+        i=7;
+        miso=8'b11111000;
+        
+        
+        repeat(8)@(negedge spi_sclk)
+        begin
+            spi_miso<=miso[i];
+            i=i-1;
+        end
     end
-
-    always@(negedge sclk)
-    begin
-        if(i<8 & i>0)
-        begin
-            miso=slave_shift_reg[i];
-            i=i+1;
-        end
-        else
-        begin
-            i=0;
-        end
-    end    
 endmodule
